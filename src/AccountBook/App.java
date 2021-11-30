@@ -1,13 +1,14 @@
 package AccountBook;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,14 +21,28 @@ public class App extends JFrame{
     JTextField idField, registerIdField, searchField, dateField, memoField, incomeField, outcomeField, debitOrCashField;
     JLabel loginLabel, idLabel, pwLabel, registerLabel, registerIdLabel, registerPwLabel, registerPwConfirmLabel, registerPwCheck;
     JPasswordField pwField, registerPwField, registerPwConfirmField;
-    JComboBox searchYearCombo;
+    JComboBox searchYearCombo, searchMonthCombo, searchDayCombo;
     JTable table;
+
+    private TableRowSorter<TableModel> rowSorter;
 
     UserData ud;
     AccountData ad;
 
+    LocalDate currentDate;
+
+    int thisYear;
+    int thisMonth;
+    int thisDays;
+
     public static void main(String[] args) {
-        new App();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new App();
+            }
+        });
+
     }
 
     public void setLoginPanel(){
@@ -157,6 +172,9 @@ public class App extends JFrame{
         table.setFont(new Font("맑은 고딕", Font.PLAIN,14));
         northPanel.add(new JScrollPane(table));
 
+        rowSorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(rowSorter);
+
         JTableHeader header = table.getTableHeader();
         header.setBackground(new Color(55,29,30));
         header.setForeground(new Color(250, 225, 0));
@@ -171,6 +189,7 @@ public class App extends JFrame{
     }
 
     public void setSouthPanel(){
+
         southPanel = new JPanel();
         southPanel.setLayout(null);
         southPanel.setBackground(new Color(250, 225, 0));
@@ -189,22 +208,25 @@ public class App extends JFrame{
         resetBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
 
         searchField = new JTextField();
-        searchField.setBounds(270, 20, 250, 40);
+        searchField.setBounds(170, 20, 350, 40);
 
-        setSearchComboBox();
-        searchYearCombo.setBounds(20,20,100,40);
+        setSearchYearCombo();
+        searchMonthCombo = new JComboBox();
+        searchYearCombo.setBounds(20,20,70,40);
+        searchMonthCombo.setBounds(90,20,70,40);
 
         southPanel.add(searchYearCombo);
+        southPanel.add(searchMonthCombo);
         southPanel.add(searchField);
         southPanel.add(searchBtn);
         southPanel.add(resetBtn);
 
     }
 
-    public void setSearchComboBox(){
+    public void setSearchYearCombo(){
 
-        LocalDate currentDate = LocalDate.now();
-        int thisYear = currentDate.getYear();
+        currentDate = LocalDate.now();
+        thisYear = currentDate.getYear();
         List<String> list = new ArrayList<>();
 
         for(int i = 1900; i <= thisYear; i++){
@@ -213,6 +235,41 @@ public class App extends JFrame{
         searchYearCombo = new JComboBox(list.toArray(new String[list.size()]));
 
     }
+
+    public void setSearchMonthCombo(int lastMonth){
+
+        currentDate = LocalDate.now();
+        List<String> list = new ArrayList<>();
+
+        for(int i = 1; i <= lastMonth; i++){
+            list.add(Integer.toString(i));
+        }
+        searchMonthCombo = new JComboBox(list.toArray(new String[list.size()]));
+
+        searchMonthCombo.setBounds(90,20,70,40);
+        southPanel.add(searchMonthCombo);
+        //searchMonthCombo.setVisible(false);
+        System.out.println(lastMonth);
+    }
+
+
+    public void setSearchDayCombo(String month, int day){
+        currentDate = LocalDate.now();
+        thisDays = currentDate.getDayOfMonth();
+        int num = 0;
+        List<String> list = new ArrayList<>();
+
+        if(month.equals("1") || month.equals("3") || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")){
+        }
+
+        for(int i = 1; i <= thisDays; i++){
+            list.add(Integer.toString(i));
+        }
+
+        searchDayCombo = new JComboBox(list.toArray(new String[list.size()]));
+    }
+
+
 
     public void addRecord(){
         DefaultTableModel model=(DefaultTableModel)table.getModel();
@@ -395,6 +452,70 @@ public class App extends JFrame{
             }
         });
 
+
+
+        searchYearCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int lastMonth = 0;
+                currentDate = LocalDate.now();
+                String year = (String)searchYearCombo.getSelectedItem();
+
+                if(year.equals(Integer.toString(currentDate.getYear()))){
+                    lastMonth = currentDate.getMonthValue();
+                }else{
+                    lastMonth = 12;
+                }
+
+                setSearchMonthCombo(lastMonth);
+            }
+        });
+
+        searchMonthCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentDate = LocalDate.now();
+                String month = (String)searchMonthCombo.getSelectedItem();
+                int day = 0;
+                setSearchDayCombo(month, currentDate.getDayOfMonth());
+            }
+        });
+
+        searchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = searchField.getText();
+
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = searchField.getText();
+
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
     }
 
 
