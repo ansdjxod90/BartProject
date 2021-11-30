@@ -1,6 +1,7 @@
 package AccountBook;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,11 +14,14 @@ import java.util.List;
 public class App extends JFrame{
 
     JPanel loginPanel, registerPanel, infoPanel, inputPanel, searchPanel;
-    JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, infoBtn, inputBtn, searchBtn;
+    JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, btn, infoBtn, inputBtn, searchBtn;
     JTextField idField, registerIdField, dateField, memoField, incomeField, outcomeField, debitOrCashField;
     JLabel loginLabel, idLabel, pwLabel, registerLabel, registerIdLabel, registerPwLabel, registerPwConfirmLabel, registerPwCheck;
     JPasswordField pwField, registerPwField, registerPwConfirmField;
+    JTable table;
 
+    UserData ud;
+    AccountData ad;
 
     public static void main(String[] args) {
         new App();
@@ -129,21 +133,55 @@ public class App extends JFrame{
     }
 
     public void setInfoPanel(){
+        infoPanel = new JPanel();
+        btn = new JButton("확인");
+        btn.setBounds(270,400,100,60);
+        infoPanel.setLayout(null);
+        infoPanel.setBackground(new Color(250, 225, 0));
+        infoPanel.setBounds(0,0,700,700);
+        String[] header = {"번호","날짜","메모","수입","지출","지출수단"};
+        DefaultTableModel dtm = new DefaultTableModel(header, 0);
+        table = new JTable(dtm);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane scrollpane = new JScrollPane(table);
+        scrollpane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        addRecord();
+        infoPanel.add(scrollpane);
+        infoPanel.add(btn);
+    }
 
+    public void addRecord(){
+        DefaultTableModel model=(DefaultTableModel)table.getModel();
+        ad = new AccountData();
+        List<List<String>> list = new ArrayList<>();
+        infoPanel = new JPanel();
+        try {
+            list = ad.dataRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"오류가 발생했습니다.");
+        }
+        String[] str = new String[list.size()];
+        for(int i = 0; i < list.size(); i++){
+            model.addRow(list.get(i).toArray(str));
+        }
     }
 
     public App(){
 
-        UserData ud = new UserData();
-        AccountData ad = new AccountData();
+        ud = new UserData();
+        ad = new AccountData();
 
         setLoginPanel();
         setRegisterPanel();
+        setInfoPanel();
 
         add(loginPanel);
         add(registerPanel);
+        add(infoPanel);
 
         registerPanel.setVisible(false);
+        infoPanel.setVisible(false);
 
         setResizable(false);
         setSize(700,700);
@@ -151,6 +189,7 @@ public class App extends JFrame{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
 
         registerPwConfirmField.addFocusListener(new FocusAdapter() {
             @Override
@@ -207,6 +246,7 @@ public class App extends JFrame{
                         }else if (arr.get(i).get(0).equals(id) && arr.get(i).get(1).equals(pw)) {
                             msg = "로그인 성공했습니다. 환영합니다, " + id + "님.";
                             loginPanel.setVisible(false);
+                            infoPanel.setVisible(true);
                             break;
                         }
                     }
@@ -288,6 +328,16 @@ public class App extends JFrame{
             }
         });
 
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                System.out.println("선택된 열 : " + table.getSelectedColumn());
+                System.out.println("선택된 행 : " + table.getSelectedRow());
+                DefaultTableModel dtm = (DefaultTableModel)table.getModel();
+                JOptionPane.showMessageDialog(null,dtm.getValueAt(table.getSelectedRow(),table.getSelectedColumn()));
+            }
+        });
     }
 
 
