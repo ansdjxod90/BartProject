@@ -4,6 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class App extends JFrame{
 
@@ -62,7 +72,6 @@ public class App extends JFrame{
 
         add(loginPanel);
 
-        //JOptionPane.showMessageDialog(null,"메시지입니다.");
         setSize(700,700);
         setTitle("가계부");
         setLocationRelativeTo(null);
@@ -72,9 +81,137 @@ public class App extends JFrame{
         loginBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                List<List<String>> arr = new ArrayList<>();
+                String id = idField.getText();
+                String pw = pwField.getText();
+                String msg = "";
+
+                try {
+                    arr = loginRead();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null,"오류가 발생했습니다.");
+                    ex.printStackTrace();
+                }
+
+                if(id.equals("") || pw.equals("")){
+                    JOptionPane.showMessageDialog(null,"공백은 입력할 수 없습니다.");
+                }else if(arr.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"정보가 존재하지 않습니다.");
+                }else if(arr.size() != 0){
+                    for(int i = 0; i < arr.size(); i++){
+                        System.out.println(arr.get(i));
+                        if (!arr.get(i).get(0).equals(id)) {
+                            msg = "등록되지 않은 ID입니다.";
+                        }else if (arr.get(i).get(0).equals(id) && !arr.get(i).get(1).equals(pw)) {
+                            msg = "비밀번호가 일치하지 않습니다.";
+                        }else if (arr.get(i).get(0).equals(id) && arr.get(i).get(1).equals(pw)) {
+                            msg = "로그인 성공했습니다. 환영합니다, " + id + "님.";
+                            loginPanel.setVisible(false);
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null,msg);
+                }
 
             }
         });
 
     }
+
+    public void loginWrite(List<String> loginArr) throws IOException {
+
+        String directory = "data\\register.csv";
+
+        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+        for(int i = 0; i < loginArr.size(); i++){
+            bw.write(loginArr.get(i));
+            if(i<loginArr.size()-1){
+                bw.write(",");
+            }
+        }
+        bw.newLine();
+
+        bw.flush();
+        bw.close();
+
+    }
+
+    public java.util.List<java.util.List<String>> loginRead() throws IOException {
+
+        java.util.List<java.util.List<String>> arrs = new ArrayList<>();
+        java.util.List<String> arr = new ArrayList<>();
+        List<String> personal;
+        String directory = "data\\register.csv";
+        ArrayList<String> pi = new ArrayList<>();
+        BufferedReader br = Files.newBufferedReader(Paths.get(directory), Charset.forName("MS949"));
+
+        while(true){
+            String line = br.readLine();
+            arr.add(line);
+            if(line == null) break;
+        }
+
+        for(int i = 0; i < arr.size()-1; i++){
+            personal = Arrays.asList(arr.get(i).split(","));
+            arrs.add(personal);
+        }
+
+
+        return arrs;
+    }
+
+    public void makeDataFile() throws IOException {
+
+        String directory = "data\\accountbook.csv";
+        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+        bw.flush();
+        bw.close();
+
+    }
+
+    public void dataWrite(List<String> dataArr) throws IOException {
+
+        String directory = "data\\accountbook.csv";
+        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+        for(int i = 0; i < dataArr.size(); i++){
+            bw.write(dataArr.get(i));
+            if(i<dataArr.size()-1){
+                bw.write(",");
+            }
+        }
+        bw.newLine();
+
+        bw.flush();
+        bw.close();
+
+        System.out.println("저장이 완료되었습니다.");
+    }
+
+    public List<List<String>> dataRead() throws IOException{
+
+        List<List<String>> arrs = new ArrayList<>();
+        List<String> arr = new ArrayList<>();
+        List<String> data;
+        String line = "";
+        String directory = "data\\accountbook.csv";
+        ArrayList<String> pi = new ArrayList<>();
+        BufferedReader br = Files.newBufferedReader(Paths.get(directory), Charset.forName("MS949"));
+
+        while(true){
+            line = br.readLine();
+            arr.add(line);
+            if(line == null) break;
+        }
+
+        for(int i = 0; i < arr.size()-1; i++){
+            data = Arrays.asList(arr.get(i).split(","));
+            arrs.add(data);
+        }
+
+        return arrs;
+    }
+
+
 }
