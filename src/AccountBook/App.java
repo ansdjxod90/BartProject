@@ -100,13 +100,12 @@ public class App extends JFrame{
                 }else if(arr.size() != 0){
                     for(int i = 0; i < arr.size(); i++){
                         System.out.println(arr.get(i));
-                        if (!arr.get(i).get(0).equals(id)) {
-                            msg = "등록되지 않은 ID입니다.";
-                        }else if (arr.get(i).get(0).equals(id) && !arr.get(i).get(1).equals(pw)) {
+                        if (arr.get(i).get(0).equals(id) && !arr.get(i).get(1).equals(pw)) {
                             msg = "비밀번호가 일치하지 않습니다.";
                         }else if (arr.get(i).get(0).equals(id) && arr.get(i).get(1).equals(pw)) {
                             msg = "로그인 성공했습니다. 환영합니다, " + id + "님.";
                             loginPanel.setVisible(false);
+                            break;
                         }
                     }
                     JOptionPane.showMessageDialog(null,msg);
