@@ -17,7 +17,7 @@ import java.util.List;
 public class App extends JFrame{
 
     private JPanel loginPanel, registerPanel, infoPanel, southPanel;
-    private JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, searchBtn, resetBtn, logoutBtn, inputBtn;
+    private JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, searchBtn, resetBtn, logoutBtn, inputBtn, deleteBtn;
     private JTextField idField, registerIdField, searchField, dateField, memoField, incomeField, outcomeField;
     private JLabel registerPwCheck;
     private JPasswordField pwField, registerPwField, registerPwConfirmField;
@@ -208,9 +208,14 @@ public class App extends JFrame{
         inputBtn.setForeground(new Color(200, 225, 0));
 
         logoutBtn = new JButton("로그아웃");
-        logoutBtn.setBounds(560, 200,90,40);
+        logoutBtn.setBounds(30, 200,90,40);
         logoutBtn.setBackground(new Color(55,29,30));
         logoutBtn.setForeground(new Color(200, 225, 0));
+
+        deleteBtn = new JButton("삭제");
+        deleteBtn.setBounds(560, 200,90,40);
+        deleteBtn.setBackground(new Color(55,29,30));
+        deleteBtn.setForeground(new Color(200, 225, 0));
 
         searchField = new JTextField();
         searchField.setBounds(250, 20, 350, 40);
@@ -274,6 +279,7 @@ public class App extends JFrame{
         southPanel.add(resetBtn);
         southPanel.add(inputBtn);
         southPanel.add(logoutBtn);
+        southPanel.add(deleteBtn);
 
     }
 
@@ -292,7 +298,6 @@ public class App extends JFrame{
 
     public void setSearchMonthCombo(int lastMonth){
 
-        currentDate = LocalDate.now();
         List<String> list = new ArrayList<>();
 
         for(int i = 1; i <= lastMonth; i++){
@@ -302,7 +307,7 @@ public class App extends JFrame{
 
         searchMonthCombo.setBounds(90,20,70,40);
         southPanel.add(searchMonthCombo);
-        System.out.println(lastMonth);
+        System.out.println(list);
     }
 
 
@@ -339,7 +344,6 @@ public class App extends JFrame{
 
         ad = new AccountData();
         List<List<String>> list = new ArrayList<>();
-        infoPanel = new JPanel();
 
         try {
             list = ad.dataRead();
@@ -351,6 +355,30 @@ public class App extends JFrame{
         for(int i = 0; i < list.size(); i++){
             model.addRow(list.get(i).toArray(str));
         }
+    }
+
+    public void recordDelete(int num){
+
+        List<List<String>> list = new ArrayList<>();
+
+        try {
+            list = ad.dataRead();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"파일 읽기 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        list.remove(num);
+        System.out.println(list);
+//        try {
+//            ad.dataRewrite(list);
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(null,"파일 쓰기 오류가 발생했습니다.");
+//            e.printStackTrace();
+//        }
+//
+//        addRecord();
+//        JOptionPane.showMessageDialog(null,"삭제가 완료되었습니다.");
     }
 
     public void clearTable() {
@@ -529,11 +557,9 @@ public class App extends JFrame{
             }
         });
 
-
-
-        searchYearCombo.addActionListener(new ActionListener() {
+        searchYearCombo.addItemListener(new ItemListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 int lastMonth = 0;
                 currentDate = LocalDate.now();
                 String year = (String)searchYearCombo.getSelectedItem();
@@ -543,10 +569,10 @@ public class App extends JFrame{
                 }else{
                     lastMonth = 12;
                 }
-
                 setSearchMonthCombo(lastMonth);
             }
         });
+
 
         searchMonthCombo.addActionListener(new ActionListener() {
             @Override
@@ -653,6 +679,15 @@ public class App extends JFrame{
             }
         });
 
+        deleteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int num = table.getSelectedRow();
+                if(num > 0){
+                    recordDelete(num);
+                }
+            }
+        });
 
     }
 

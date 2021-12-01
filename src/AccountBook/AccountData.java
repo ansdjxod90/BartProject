@@ -1,6 +1,5 @@
 package AccountBook;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -64,6 +63,25 @@ public class AccountData {
         }
 
         return arrs;
+    }
+
+    public void dataRewrite(List<List<String>> dataArr) throws IOException{
+
+        String directory = "data\\accountbook.csv";
+        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"), StandardOpenOption.CREATE);
+
+        for(int i = 0; i<dataArr.size(); i++){
+            for(int j = 0; j <dataArr.get(i).size(); j++){
+                bw.write(dataArr.get(i).get(j));
+                if(i<dataArr.size()-1){
+                    bw.write(",");
+                }
+            }
+            bw.newLine();
+        }
+
+        bw.flush();
+        bw.close();
     }
 
 }
