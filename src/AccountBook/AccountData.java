@@ -68,18 +68,14 @@ public class AccountData {
     public void dataRewrite(List<List<String>> dataArr) throws IOException{
 
         String directory = "data\\accountbook.csv";
-        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"), StandardOpenOption.CREATE);
+        BufferedWriter bw = Files.newBufferedWriter(Paths.get(directory), Charset.forName("MS949"));
 
         for(int i = 0; i<dataArr.size(); i++){
             for(int j = 0; j <dataArr.get(i).size(); j++){
-                bw.write(dataArr.get(i).get(j));
-                if(i<dataArr.size()-1){
-                    bw.write(",");
-                }
+                bw.write(dataArr.get(i).get(j)+",");
             }
             bw.newLine();
         }
-
         bw.flush();
         bw.close();
     }

@@ -258,12 +258,20 @@ public class App extends JFrame{
         outcomeLabel.setBounds(250,140,60,30);
         debitOrCashLabel.setBounds(480,100,100,30);
 
+
         String[] str = {"현금","카드"};
         debitOrCashCombo = new JComboBox(str);
         debitOrCashCombo.setBounds(480,140,140,35);
 
+        setInputYearCombo();
+        setInputMonthCombo();
+        setInputDayCombo();
+
+        inputYearCombo.setBounds(70,100,60,40);
+        inputMonthCombo.setBounds(130,100,50,40);
+        inputDayCombo.setBounds(180,100,50,40);
+
         southPanel.add(dateLabel);
-        southPanel.add(dateField);
         southPanel.add(memoLabel);
         southPanel.add(memoField);
         southPanel.add(incomeLabel);
@@ -274,6 +282,9 @@ public class App extends JFrame{
         southPanel.add(debitOrCashCombo);
         southPanel.add(searchYearCombo);
         southPanel.add(searchMonthCombo);
+        southPanel.add(inputYearCombo);
+        southPanel.add(inputMonthCombo);
+        southPanel.add(inputDayCombo);
         southPanel.add(searchField);
         southPanel.add(searchBtn);
         southPanel.add(resetBtn);
@@ -338,6 +349,22 @@ public class App extends JFrame{
         inputYearCombo = new JComboBox(list.toArray(new String[list.size()]));
     }
 
+    public void setInputMonthCombo(){
+        String[] month = new String[12];
+        for(int i = 0; i < month.length; i++){
+            month[i] = Integer.toString(i+1);
+        }
+        inputMonthCombo = new JComboBox(month);
+    }
+
+    public void setInputDayCombo(){
+        String[] day = new String[31];
+        for(int i = 0; i < day.length; i++){
+            day[i] = Integer.toString(i+1);
+        }
+        inputDayCombo = new JComboBox(day);
+    }
+
     public void addRecord(){
         clearTable();
         DefaultTableModel model=(DefaultTableModel)table.getModel();
@@ -370,15 +397,16 @@ public class App extends JFrame{
 
         list.remove(num);
         System.out.println(list);
-//        try {
-//            ad.dataRewrite(list);
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(null,"파일 쓰기 오류가 발생했습니다.");
-//            e.printStackTrace();
-//        }
-//
-//        addRecord();
-//        JOptionPane.showMessageDialog(null,"삭제가 완료되었습니다.");
+
+        try {
+            ad.dataRewrite(list);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"파일 쓰기 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        addRecord();
+        JOptionPane.showMessageDialog(null,"삭제가 완료되었습니다.");
     }
 
     public void clearTable() {
@@ -409,8 +437,7 @@ public class App extends JFrame{
         add(infoPanel);
 
         registerPanel.setVisible(false);
-        loginPanel.setVisible(false);
-        //infoPanel.setVisible(false);
+        infoPanel.setVisible(false);
 
         setResizable(false);
         setSize(700,700);
@@ -650,7 +677,14 @@ public class App extends JFrame{
                 }
 
 
-                String date = dateField.getText();
+                String str = "";
+                String year = (String) inputYearCombo.getSelectedItem();
+                String month = (String) inputMonthCombo.getSelectedItem();
+                String day = (String) inputDayCombo.getSelectedItem();
+                if(Integer.parseInt(day) < 10){
+                    str = "0";
+                }
+                String date = year + "-" + month + "-" + str + day;
                 String memo = memoField.getText();
                 String income = incomeField.getText();
                 String outcome = outcomeField.getText();
@@ -686,6 +720,14 @@ public class App extends JFrame{
                 if(num > 0){
                     recordDelete(num);
                 }
+            }
+        });
+
+        logoutBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                infoPanel.setVisible(false);
+                loginPanel.setVisible(true);
             }
         });
 
