@@ -40,7 +40,6 @@ public class AccountData {
         bw.flush();
         bw.close();
 
-        JOptionPane.showMessageDialog(null,"저장이 완료되었습니다.");
     }
 
     public List<List<String>> dataRead() throws IOException{

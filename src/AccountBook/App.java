@@ -16,13 +16,13 @@ import java.util.List;
 
 public class App extends JFrame{
 
-    JPanel loginPanel, registerPanel, infoPanel, southPanel, inputPanel, searchPanel;
-    JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, searchBtn, resetBtn, infoBtn, inputBtn;
-    JTextField idField, registerIdField, searchField, dateField, memoField, incomeField, outcomeField, debitOrCashField;
-    JLabel loginLabel, idLabel, pwLabel, registerLabel, registerIdLabel, registerPwLabel, registerPwConfirmLabel, registerPwCheck;
-    JPasswordField pwField, registerPwField, registerPwConfirmField;
-    JComboBox searchYearCombo, searchMonthCombo, searchDayCombo;
-    JTable table;
+    private JPanel loginPanel, registerPanel, infoPanel, southPanel;
+    private JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, searchBtn, resetBtn, logoutBtn, inputBtn;
+    private JTextField idField, registerIdField, searchField, dateField, memoField, incomeField, outcomeField;
+    private JLabel registerPwCheck;
+    private JPasswordField pwField, registerPwField, registerPwConfirmField;
+    private JComboBox searchYearCombo, searchMonthCombo, searchDayCombo, inputYearCombo, inputMonthCombo, inputDayCombo, debitOrCashCombo;
+    private JTable table;
 
     private TableRowSorter<TableModel> rowSorter;
 
@@ -31,27 +31,22 @@ public class App extends JFrame{
 
     LocalDate currentDate;
 
-    int thisYear;
-    int thisMonth;
-    int thisDays;
+    private int thisYear;
+    private int thisMonth;
+    private int thisDays;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new App();
-            }
-        });
+        SwingUtilities.invokeLater(App::new);
 
     }
 
     public void setLoginPanel(){
 
         loginPanel = new JPanel();
-        loginLabel = new JLabel("로그인");
-        idLabel = new JLabel("Username");
+        JLabel loginLabel = new JLabel("로그인");
+        JLabel idLabel = new JLabel("Username");
         idField = new JTextField();
-        pwLabel = new JLabel("Password");
+        JLabel pwLabel = new JLabel("Password");
         pwField = new JPasswordField();
         loginBtn = new JButton("로그인");
         registerBtn = new JButton("회원가입");
@@ -94,10 +89,10 @@ public class App extends JFrame{
     public void setRegisterPanel(){
 
         registerPanel = new JPanel();
-        registerLabel = new JLabel("회원가입");
-        registerIdLabel = new JLabel("사용하실 Username을 입력하세요.");
-        registerPwLabel = new JLabel("사용하실 비밀번호를 입력해주세요.");
-        registerPwConfirmLabel = new JLabel("비밀번호를 다시 한번 입력해주세요.");
+        JLabel registerLabel = new JLabel("회원가입");
+        JLabel registerIdLabel = new JLabel("사용하실 Username을 입력하세요.");
+        JLabel registerPwLabel = new JLabel("사용하실 비밀번호를 입력해주세요.");
+        JLabel registerPwConfirmLabel = new JLabel("비밀번호를 다시 한번 입력해주세요.");
         registerPwCheck = new JLabel("");
         registerIdField = new JTextField();
         registerPwField = new JPasswordField();
@@ -196,7 +191,7 @@ public class App extends JFrame{
         southPanel.setPreferredSize(new Dimension(690,300));
 
         searchBtn = new JButton("검색");
-        searchBtn.setBounds(520,20,80,40);
+        searchBtn.setBounds(160,20,80,40);
         searchBtn.setBackground(new Color(55,29,30));
         searchBtn.setForeground(new Color(250, 225, 0));
         searchBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
@@ -207,19 +202,78 @@ public class App extends JFrame{
         resetBtn.setForeground(new Color(250, 225, 0));
         resetBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
 
+        inputBtn = new JButton("등록");
+        inputBtn.setBounds(480, 200,90,40);
+        inputBtn.setBackground(new Color(55,29,30));
+        inputBtn.setForeground(new Color(200, 225, 0));
+
+        logoutBtn = new JButton("로그아웃");
+        logoutBtn.setBounds(560, 200,90,40);
+        logoutBtn.setBackground(new Color(55,29,30));
+        logoutBtn.setForeground(new Color(200, 225, 0));
+
         searchField = new JTextField();
-        searchField.setBounds(170, 20, 350, 40);
+        searchField.setBounds(250, 20, 350, 40);
 
         setSearchYearCombo();
         searchMonthCombo = new JComboBox();
         searchYearCombo.setBounds(20,20,70,40);
         searchMonthCombo.setBounds(90,20,70,40);
 
+        JLabel dateLabel = new JLabel("날짜");
+        JLabel memoLabel = new JLabel("메모");
+        JLabel incomeLabel = new JLabel("수입");
+        JLabel outcomeLabel = new JLabel("지출");
+        JLabel debitOrCashLabel = new JLabel("현금/카드");
+
+        dateLabel.setForeground(new Color(55,29,30));
+        memoLabel.setForeground(new Color(55,29,30));
+        incomeLabel.setForeground(new Color(55,29,30));
+        outcomeLabel.setForeground(new Color(55,29,30));
+        debitOrCashLabel.setForeground(new Color(55,29,30));
+
+        dateLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        memoLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        incomeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        outcomeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        debitOrCashLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+
+        dateField = new JTextField();
+        dateField.setBounds(70, 100, 140,35);
+        memoField = new JTextField();
+        memoField.setBounds(300,100,140,35);
+        incomeField = new JTextField();
+        incomeField.setBounds(70,140,140,35);
+        outcomeField = new JTextField();
+        outcomeField.setBounds(300,140,140,35);
+
+        dateLabel.setBounds(20,100,60,30);
+        memoLabel.setBounds(250,100,60,30);
+        incomeLabel.setBounds(20,140,60,30);
+        outcomeLabel.setBounds(250,140,60,30);
+        debitOrCashLabel.setBounds(480,100,100,30);
+
+        String[] str = {"현금","카드"};
+        debitOrCashCombo = new JComboBox(str);
+        debitOrCashCombo.setBounds(480,140,140,35);
+
+        southPanel.add(dateLabel);
+        southPanel.add(dateField);
+        southPanel.add(memoLabel);
+        southPanel.add(memoField);
+        southPanel.add(incomeLabel);
+        southPanel.add(incomeField);
+        southPanel.add(outcomeLabel);
+        southPanel.add(outcomeField);
+        southPanel.add(debitOrCashLabel);
+        southPanel.add(debitOrCashCombo);
         southPanel.add(searchYearCombo);
         southPanel.add(searchMonthCombo);
         southPanel.add(searchField);
         southPanel.add(searchBtn);
         southPanel.add(resetBtn);
+        southPanel.add(inputBtn);
+        southPanel.add(logoutBtn);
 
     }
 
@@ -248,7 +302,6 @@ public class App extends JFrame{
 
         searchMonthCombo.setBounds(90,20,70,40);
         southPanel.add(searchMonthCombo);
-        //searchMonthCombo.setVisible(false);
         System.out.println(lastMonth);
     }
 
@@ -269,9 +322,19 @@ public class App extends JFrame{
         searchDayCombo = new JComboBox(list.toArray(new String[list.size()]));
     }
 
+    public void setInputYearCombo() {
+        currentDate = LocalDate.now();
+        thisYear = currentDate.getYear();
+        List<String> list = new ArrayList<>();
 
+        for(int i = 1900; i <= thisYear; i++){
+            list.add(Integer.toString(i));
+        }
+        inputYearCombo = new JComboBox(list.toArray(new String[list.size()]));
+    }
 
     public void addRecord(){
+        clearTable();
         DefaultTableModel model=(DefaultTableModel)table.getModel();
 
         ad = new AccountData();
@@ -288,6 +351,20 @@ public class App extends JFrame{
         for(int i = 0; i < list.size(); i++){
             model.addRow(list.get(i).toArray(str));
         }
+    }
+
+    public void clearTable() {
+        DefaultTableModel dm = (DefaultTableModel)table.getModel();
+        dm.getDataVector().removeAllElements();
+        revalidate();
+    }
+
+    public void resetField(){
+        dateField.setText("");
+        memoField.setText("");
+        incomeField.setText("");
+        outcomeField.setText("");
+        debitOrCashCombo.setSelectedIndex(0);
     }
 
     public App(){
@@ -516,6 +593,67 @@ public class App extends JFrame{
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
+
+        resetBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchField.setText("");
+            }
+        });
+
+        inputBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                List<String> list = new ArrayList<>();
+                List<List<String>> arr = new ArrayList<>();
+                int num;
+                String number;
+
+                try {
+                    arr = ad.dataRead();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null,"읽기 오류가 발생했습니다.");
+                    ex.printStackTrace();
+                }
+                if(arr.isEmpty()){
+                    number = "1";
+                }else{
+                    num = Integer.parseInt(arr.get(arr.size()-1).get(0));
+                    number = Integer.toString(num + 1);
+                }
+
+
+                String date = dateField.getText();
+                String memo = memoField.getText();
+                String income = incomeField.getText();
+                String outcome = outcomeField.getText();
+                String debitOrCash = (String)debitOrCashCombo.getSelectedItem();
+
+                if(date.equals("") || memo.equals("") || income.equals("") || outcome.equals("") || debitOrCash.equals("")){
+                    JOptionPane.showMessageDialog(null,"공백이 있습니다. 모두 입력하여 주십시오.");
+                }else{
+                    list.add(number);
+                    list.add(date);
+                    list.add(memo);
+                    list.add(income);
+                    list.add(outcome);
+                    list.add(debitOrCash);
+                    try {
+                        ad.dataWrite(list);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null,"쓰기 오류가 발생했습니다.");
+                        resetField();
+                        ex.printStackTrace();
+                    }
+                    JOptionPane.showMessageDialog(null,"등록이 완료되었습니다.");
+                    resetField();
+                    addRecord();
+                }
+            }
+        });
+
+
     }
 
 
