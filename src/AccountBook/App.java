@@ -321,23 +321,6 @@ public class App extends JFrame{
         System.out.println(list);
     }
 
-
-    public void setSearchDayCombo(String month, int day){
-        currentDate = LocalDate.now();
-        thisDays = currentDate.getDayOfMonth();
-        int num = 0;
-        List<String> list = new ArrayList<>();
-
-        if(month.equals("1") || month.equals("3") || month.equals("5") || month.equals("7") || month.equals("8") || month.equals("10") || month.equals("12")){
-        }
-
-        for(int i = 1; i <= thisDays; i++){
-            list.add(Integer.toString(i));
-        }
-
-        searchDayCombo = new JComboBox(list.toArray(new String[list.size()]));
-    }
-
     public void setInputYearCombo() {
         currentDate = LocalDate.now();
         thisYear = currentDate.getYear();
@@ -607,7 +590,6 @@ public class App extends JFrame{
                 currentDate = LocalDate.now();
                 String month = (String)searchMonthCombo.getSelectedItem();
                 int day = 0;
-                setSearchDayCombo(month, currentDate.getDayOfMonth());
             }
         });
 
