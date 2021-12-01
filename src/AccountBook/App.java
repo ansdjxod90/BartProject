@@ -2,22 +2,25 @@ package AccountBook;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class App extends JFrame{
 
-    JPanel loginPanel, registerPanel, infoPanel, inputPanel, searchPanel;
-    JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, btn, infoBtn, inputBtn, searchBtn;
-    JTextField idField, registerIdField, dateField, memoField, incomeField, outcomeField, debitOrCashField;
+    JPanel loginPanel, registerPanel, infoPanel, southPanel, inputPanel, searchPanel;
+    JButton loginBtn, registerBtn, registerSubmitBtn, registerCancelBtn, searchBtn, resetBtn, infoBtn, inputBtn;
+    JTextField idField, registerIdField, searchField, dateField, memoField, incomeField, outcomeField, debitOrCashField;
     JLabel loginLabel, idLabel, pwLabel, registerLabel, registerIdLabel, registerPwLabel, registerPwConfirmLabel, registerPwCheck;
     JPasswordField pwField, registerPwField, registerPwConfirmField;
+    JComboBox searchYearCombo;
     JTable table;
 
     UserData ud;
@@ -132,34 +135,97 @@ public class App extends JFrame{
         registerPanel.setBounds(0,0,700,700);
     }
 
+
     public void setInfoPanel(){
+
         infoPanel = new JPanel();
-        btn = new JButton("확인");
-        btn.setBounds(270,400,100,60);
-        infoPanel.setLayout(null);
-        infoPanel.setBackground(new Color(250, 225, 0));
-        infoPanel.setBounds(0,0,700,700);
-        String[] header = {"번호","날짜","메모","수입","지출","지출수단"};
-        DefaultTableModel dtm = new DefaultTableModel(header, 0);
+        JPanel northPanel = new JPanel();
+
+        infoPanel.setLayout(new GridLayout(2,1));
+        northPanel.setBackground(new Color(250, 225, 0));
+
+
+        String[] headers = {"순번","날짜","메모","수입","지출","현금/카드"};
+
+        DefaultTableModel dtm = new DefaultTableModel(headers, 0);
+
         table = new JTable(dtm);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        JScrollPane scrollpane = new JScrollPane(table);
-        scrollpane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        table.setPreferredScrollableViewportSize(new Dimension(670,330));
+        table.setRowHeight(30);
+        table.setBackground(Color.WHITE);
+        table.setFont(new Font("맑은 고딕", Font.PLAIN,14));
+        northPanel.add(new JScrollPane(table));
+
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(55,29,30));
+        header.setForeground(new Color(250, 225, 0));
+        header.setFont(new Font("맑은 고딕", Font.BOLD,15));
+
         addRecord();
-        infoPanel.add(scrollpane);
-        infoPanel.add(btn);
+        setSouthPanel();
+
+        infoPanel.setBounds(0,0,700,700);
+        infoPanel.add(northPanel);
+        infoPanel.add(southPanel);
+    }
+
+    public void setSouthPanel(){
+        southPanel = new JPanel();
+        southPanel.setLayout(null);
+        southPanel.setBackground(new Color(250, 225, 0));
+        southPanel.setPreferredSize(new Dimension(690,300));
+
+        searchBtn = new JButton("검색");
+        searchBtn.setBounds(520,20,80,40);
+        searchBtn.setBackground(new Color(55,29,30));
+        searchBtn.setForeground(new Color(250, 225, 0));
+        searchBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
+
+        resetBtn = new JButton("초기화");
+        resetBtn.setBounds(600,20,80,40);
+        resetBtn.setBackground(new Color(55,29,30));
+        resetBtn.setForeground(new Color(250, 225, 0));
+        resetBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
+
+        searchField = new JTextField();
+        searchField.setBounds(270, 20, 250, 40);
+
+        setSearchComboBox();
+        searchYearCombo.setBounds(20,20,100,40);
+
+        southPanel.add(searchYearCombo);
+        southPanel.add(searchField);
+        southPanel.add(searchBtn);
+        southPanel.add(resetBtn);
+
+    }
+
+    public void setSearchComboBox(){
+
+        LocalDate currentDate = LocalDate.now();
+        int thisYear = currentDate.getYear();
+        List<String> list = new ArrayList<>();
+
+        for(int i = 1900; i <= thisYear; i++){
+            list.add(Integer.toString(i));
+        }
+        searchYearCombo = new JComboBox(list.toArray(new String[list.size()]));
+
     }
 
     public void addRecord(){
         DefaultTableModel model=(DefaultTableModel)table.getModel();
+
         ad = new AccountData();
         List<List<String>> list = new ArrayList<>();
         infoPanel = new JPanel();
+
         try {
             list = ad.dataRead();
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"오류가 발생했습니다.");
+            JOptionPane.showMessageDialog(null,"파일 읽기 오류가 발생했습니다.");
         }
         String[] str = new String[list.size()];
         for(int i = 0; i < list.size(); i++){
@@ -181,7 +247,8 @@ public class App extends JFrame{
         add(infoPanel);
 
         registerPanel.setVisible(false);
-        infoPanel.setVisible(false);
+        loginPanel.setVisible(false);
+        //infoPanel.setVisible(false);
 
         setResizable(false);
         setSize(700,700);
@@ -328,16 +395,6 @@ public class App extends JFrame{
             }
         });
 
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                System.out.println("선택된 열 : " + table.getSelectedColumn());
-                System.out.println("선택된 행 : " + table.getSelectedRow());
-                DefaultTableModel dtm = (DefaultTableModel)table.getModel();
-                JOptionPane.showMessageDialog(null,dtm.getValueAt(table.getSelectedRow(),table.getSelectedColumn()));
-            }
-        });
     }
 
 
