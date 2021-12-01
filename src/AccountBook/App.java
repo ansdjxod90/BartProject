@@ -190,11 +190,6 @@ public class App extends JFrame{
         southPanel.setBackground(new Color(250, 225, 0));
         southPanel.setPreferredSize(new Dimension(690,300));
 
-        searchBtn = new JButton("검색");
-        searchBtn.setBounds(160,20,80,40);
-        searchBtn.setBackground(new Color(55,29,30));
-        searchBtn.setForeground(new Color(250, 225, 0));
-        searchBtn.setFont(new Font("맑은 고딕", Font.BOLD,15));
 
         resetBtn = new JButton("초기화");
         resetBtn.setBounds(600,20,80,40);
@@ -218,33 +213,34 @@ public class App extends JFrame{
         deleteBtn.setForeground(new Color(200, 225, 0));
 
         searchField = new JTextField();
-        searchField.setBounds(250, 20, 350, 40);
+        searchField.setBounds(190, 20, 400, 40);
 
-        setSearchYearCombo();
-        searchMonthCombo = new JComboBox();
-        searchYearCombo.setBounds(20,20,70,40);
-        searchMonthCombo.setBounds(90,20,70,40);
+//        setSearchYearCombo();
+//        searchMonthCombo = new JComboBox();
+//        searchYearCombo.setBounds(20,20,70,40);
+//        searchMonthCombo.setBounds(90,20,70,40);
 
+        JLabel searchLabel = new JLabel("검색");
         JLabel dateLabel = new JLabel("날짜");
         JLabel memoLabel = new JLabel("메모");
         JLabel incomeLabel = new JLabel("수입");
         JLabel outcomeLabel = new JLabel("지출");
         JLabel debitOrCashLabel = new JLabel("현금/카드");
 
+        searchLabel.setForeground(new Color(55,29,30));
         dateLabel.setForeground(new Color(55,29,30));
         memoLabel.setForeground(new Color(55,29,30));
         incomeLabel.setForeground(new Color(55,29,30));
         outcomeLabel.setForeground(new Color(55,29,30));
         debitOrCashLabel.setForeground(new Color(55,29,30));
 
+        searchLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
         dateLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
         memoLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
         incomeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
         outcomeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
         debitOrCashLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
 
-        dateField = new JTextField();
-        dateField.setBounds(70, 100, 140,35);
         memoField = new JTextField();
         memoField.setBounds(300,100,140,35);
         incomeField = new JTextField();
@@ -252,12 +248,12 @@ public class App extends JFrame{
         outcomeField = new JTextField();
         outcomeField.setBounds(300,140,140,35);
 
+        searchLabel.setBounds(140,20,70,40);
         dateLabel.setBounds(20,100,60,30);
         memoLabel.setBounds(250,100,60,30);
         incomeLabel.setBounds(20,140,60,30);
         outcomeLabel.setBounds(250,140,60,30);
         debitOrCashLabel.setBounds(480,100,100,30);
-
 
         String[] str = {"현금","카드"};
         debitOrCashCombo = new JComboBox(str);
@@ -271,6 +267,7 @@ public class App extends JFrame{
         inputMonthCombo.setBounds(130,100,50,40);
         inputDayCombo.setBounds(180,100,50,40);
 
+        southPanel.add(searchLabel);
         southPanel.add(dateLabel);
         southPanel.add(memoLabel);
         southPanel.add(memoField);
@@ -280,13 +277,10 @@ public class App extends JFrame{
         southPanel.add(outcomeField);
         southPanel.add(debitOrCashLabel);
         southPanel.add(debitOrCashCombo);
-        southPanel.add(searchYearCombo);
-        southPanel.add(searchMonthCombo);
         southPanel.add(inputYearCombo);
         southPanel.add(inputMonthCombo);
         southPanel.add(inputDayCombo);
         southPanel.add(searchField);
-        southPanel.add(searchBtn);
         southPanel.add(resetBtn);
         southPanel.add(inputBtn);
         southPanel.add(logoutBtn);
@@ -486,6 +480,8 @@ public class App extends JFrame{
                             msg = "로그인 성공했습니다. 환영합니다, " + id + "님.";
                             loginPanel.setVisible(false);
                             infoPanel.setVisible(true);
+                            idField.setText("");
+                            pwField.setText("");
                             break;
                         }
                     }
@@ -505,6 +501,12 @@ public class App extends JFrame{
         registerSubmitBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                UserData ud = new UserData();
+                try {
+                    ud.makeLoginFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 List<List<String>> arr = new ArrayList<>();
                 List<String> list = new ArrayList<>();
                 String id = registerIdField.getText();
@@ -538,6 +540,9 @@ public class App extends JFrame{
                         }else{
                             msg = "가입이 완료되었습니다, " + id + "님.";
                             flag = true;
+                            registerIdField.setText("");
+                            registerPwField.setText("");
+                            registerPwConfirmField.setText("");
                         }
                     }
                     JOptionPane.showMessageDialog(null,msg);
@@ -567,38 +572,32 @@ public class App extends JFrame{
             }
         });
 
-        searchYearCombo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                int lastMonth = 0;
-                currentDate = LocalDate.now();
-                String year = (String)searchYearCombo.getSelectedItem();
+//        searchYearCombo.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                int lastMonth = 0;
+//                currentDate = LocalDate.now();
+//                String year = (String)searchYearCombo.getSelectedItem();
+//
+//                if(year.equals(Integer.toString(currentDate.getYear()))){
+//                    lastMonth = currentDate.getMonthValue();
+//                }else{
+//                    lastMonth = 12;
+//                }
+//                setSearchMonthCombo(lastMonth);
+//            }
+//        });
 
-                if(year.equals(Integer.toString(currentDate.getYear()))){
-                    lastMonth = currentDate.getMonthValue();
-                }else{
-                    lastMonth = 12;
-                }
-                setSearchMonthCombo(lastMonth);
-            }
-        });
 
+//        searchMonthCombo.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                currentDate = LocalDate.now();
+//                String month = (String)searchMonthCombo.getSelectedItem();
+//                int day = 0;
+//            }
+//        });
 
-        searchMonthCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentDate = LocalDate.now();
-                String month = (String)searchMonthCombo.getSelectedItem();
-                int day = 0;
-            }
-        });
-
-        searchBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override

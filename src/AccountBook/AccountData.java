@@ -2,6 +2,7 @@ package AccountBook;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -48,18 +49,21 @@ public class AccountData {
         List<String> data;
         String line = "";
         String directory = "data\\accountbook.csv";
+        File file = new File(directory);
         ArrayList<String> pi = new ArrayList<>();
-        BufferedReader br = Files.newBufferedReader(Paths.get(directory), Charset.forName("MS949"));
+        if(file.exists()){
+            BufferedReader br = Files.newBufferedReader(Paths.get(directory), Charset.forName("MS949"));
 
-        while(true){
-            line = br.readLine();
-            arr.add(line);
-            if(line == null) break;
-        }
+            while(true){
+                line = br.readLine();
+                arr.add(line);
+                if(line == null) break;
+            }
 
-        for(int i = 0; i < arr.size()-1; i++){
-            data = Arrays.asList(arr.get(i).split(","));
-            arrs.add(data);
+            for(int i = 0; i < arr.size()-1; i++){
+                data = Arrays.asList(arr.get(i).split(","));
+                arrs.add(data);
+            }
         }
 
         return arrs;
