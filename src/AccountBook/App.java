@@ -300,7 +300,7 @@ public class App extends JFrame{
         outcomeLabel.setBounds(250,140,60,30);
         debitOrCashLabel.setBounds(480,100,100,30);
 
-        String[] str = {"현금","카드"};
+        String[] str = {"카드","현금"};
         debitOrCashCombo = new JComboBox(str);
         debitOrCashCombo.setBounds(480,140,140,35);
 
