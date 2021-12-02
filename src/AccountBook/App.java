@@ -51,6 +51,30 @@ public class App extends JFrame{
         loginBtn = new JButton("로그인");
         registerBtn = new JButton("회원가입");
 
+        ImageIcon icon = new ImageIcon("image/Bart.png");
+        Image im = icon.getImage();
+        Image im2 = im.getScaledInstance(300,300,Image.SCALE_DEFAULT);
+        ImageIcon icon2 = new ImageIcon(im2);
+        JLabel img = new JLabel(icon2);
+        img.setIcon(icon2);
+        img.setBounds(5,130,300,400);
+
+        ImageIcon icon3 = new ImageIcon("image/Bart2.png");
+        Image im3 = icon3.getImage();
+        Image im4 = im3.getScaledInstance(240,280,Image.SCALE_DEFAULT);
+        ImageIcon icon4 = new ImageIcon(im4);
+        JLabel img2 = new JLabel(icon4);
+        img2.setIcon(icon4);
+        img2.setBounds(430,200,250,250);
+
+        ImageIcon icon5 = new ImageIcon("image/Simpsons.png");
+        Image im5 = icon5.getImage();
+        Image im6 = im5.getScaledInstance(400,200,Image.SCALE_DEFAULT);
+        ImageIcon icon6 = new ImageIcon(im6);
+        JLabel img3 = new JLabel(icon6);
+        img3.setIcon(icon6);
+        img3.setBounds(50,400,650,325);
+
         loginPanel.setLayout(null);
 
         loginLabel.setFont(new Font("맑은 고딕", Font.BOLD, 45));
@@ -82,6 +106,9 @@ public class App extends JFrame{
         loginPanel.add(pwField);
         loginPanel.add(loginBtn);
         loginPanel.add(registerBtn);
+        loginPanel.add(img);
+        loginPanel.add(img2);
+        loginPanel.add(img3);
 
         loginPanel.setBounds(0,0,700,700);
     }
@@ -99,6 +126,22 @@ public class App extends JFrame{
         registerPwConfirmField = new JPasswordField();
         registerSubmitBtn = new JButton("제출");
         registerCancelBtn = new JButton("뒤로");
+
+        ImageIcon icon = new ImageIcon("image/Bart3.png");
+        Image im = icon.getImage();
+        Image im2 = im.getScaledInstance(130,200,Image.SCALE_DEFAULT);
+        ImageIcon icon2 = new ImageIcon(im2);
+        JLabel img = new JLabel(icon2);
+        img.setIcon(icon2);
+        img.setBounds(5,230,200,200);
+
+        ImageIcon icon3 = new ImageIcon("image/Bart4.png");
+        Image im3 = icon3.getImage();
+        Image im4 = im3.getScaledInstance(150,200,Image.SCALE_DEFAULT);
+        ImageIcon icon4 = new ImageIcon(im4);
+        JLabel img2 = new JLabel(icon4);
+        img2.setIcon(icon4);
+        img2.setBounds(470,230,200,200);
 
         registerPanel.setLayout(null);
 
@@ -141,6 +184,8 @@ public class App extends JFrame{
         registerPanel.add(registerPwCheck);
         registerPanel.add(registerSubmitBtn);
         registerPanel.add(registerCancelBtn);
+        registerPanel.add(img);
+        registerPanel.add(img2);
 
         registerPanel.setBounds(0,0,700,700);
     }
@@ -262,10 +307,19 @@ public class App extends JFrame{
         setInputYearCombo();
         setInputMonthCombo();
         setInputDayCombo();
+        setInputCombo();
 
         inputYearCombo.setBounds(70,100,60,40);
         inputMonthCombo.setBounds(130,100,50,40);
         inputDayCombo.setBounds(180,100,50,40);
+
+        ImageIcon icon = new ImageIcon("image/Simpsons2.png");
+        Image im = icon.getImage();
+        Image im2 = im.getScaledInstance(300,150,Image.SCALE_DEFAULT);
+        ImageIcon icon2 = new ImageIcon(im2);
+        JLabel img = new JLabel(icon2);
+        img.setIcon(icon2);
+        img.setBounds(150,180,300,150);
 
         southPanel.add(searchLabel);
         southPanel.add(dateLabel);
@@ -285,6 +339,7 @@ public class App extends JFrame{
         southPanel.add(inputBtn);
         southPanel.add(logoutBtn);
         southPanel.add(deleteBtn);
+        southPanel.add(img);
 
     }
 
@@ -312,7 +367,6 @@ public class App extends JFrame{
 
         searchMonthCombo.setBounds(90,20,70,40);
         southPanel.add(searchMonthCombo);
-        System.out.println(list);
     }
 
     public void setInputYearCombo() {
@@ -373,7 +427,6 @@ public class App extends JFrame{
         }
 
         list.remove(num);
-        System.out.println(list);
 
         try {
             ad.dataRewrite(list);
@@ -393,11 +446,23 @@ public class App extends JFrame{
     }
 
     public void resetField(){
-        dateField.setText("");
+
+        setInputCombo();
         memoField.setText("");
         incomeField.setText("");
         outcomeField.setText("");
         debitOrCashCombo.setSelectedIndex(0);
+    }
+
+    public void setInputCombo(){
+        currentDate = LocalDate.now();
+        thisYear = currentDate.getYear();
+        thisMonth = currentDate.getMonthValue();
+        thisDays = currentDate.getDayOfMonth();
+
+        inputYearCombo.getModel().setSelectedItem(thisYear);
+        inputMonthCombo.getModel().setSelectedItem(thisMonth);
+        inputDayCombo.getModel().setSelectedItem(thisDays);
     }
 
     public App(){
@@ -471,7 +536,6 @@ public class App extends JFrame{
                     JOptionPane.showMessageDialog(null,"정보가 존재하지 않습니다.");
                 }else if(arr.size() != 0){
                     for(int i = 0; i < arr.size(); i++){
-                        System.out.println(arr.get(i));
                         if (!arr.get(i).get(0).equals(id) && !arr.get(i).get(1).equals(pw)) {
                             msg = "사용자 정보가 존재하지 않습니다.";
                         }else if (arr.get(i).get(0).equals(id) && !arr.get(i).get(1).equals(pw)) {
@@ -624,7 +688,7 @@ public class App extends JFrame{
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new UnsupportedOperationException("");
             }
         });
 
@@ -638,6 +702,7 @@ public class App extends JFrame{
         inputBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
 
                 List<String> list = new ArrayList<>();
                 List<List<String>> arr = new ArrayList<>();
@@ -659,9 +724,10 @@ public class App extends JFrame{
 
 
                 String str = "";
-                String year = (String) inputYearCombo.getSelectedItem();
-                String month = (String) inputMonthCombo.getSelectedItem();
-                String day = (String) inputDayCombo.getSelectedItem();
+
+                String year = String.valueOf(inputYearCombo.getSelectedItem());
+                String month = String.valueOf(inputMonthCombo.getSelectedItem());
+                String day = String.valueOf(inputDayCombo.getSelectedItem());
                 if(Integer.parseInt(day) < 10){
                     str = "0";
                 }
@@ -698,8 +764,14 @@ public class App extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int num = table.getSelectedRow();
+
                 if(num > 0){
-                    recordDelete(num);
+                    int result = JOptionPane.showConfirmDialog(null, "기록을 삭제하시겠습니까?", "삭제", JOptionPane.OK_CANCEL_OPTION);
+                    if(result == 0){
+                        recordDelete(num);
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(null,"기록을 선택해주십시오.");
                 }
             }
         });
@@ -712,7 +784,33 @@ public class App extends JFrame{
             }
         });
 
+        incomeField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                    return;
+                }
+            }
+        });
+
+        outcomeField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                    return;
+                }
+            }
+        });
+
     }
+
+
 
 
 
