@@ -260,10 +260,6 @@ public class App extends JFrame{
         searchField = new JTextField();
         searchField.setBounds(190, 20, 400, 40);
 
-//        setSearchYearCombo();
-//        searchMonthCombo = new JComboBox();
-//        searchYearCombo.setBounds(20,20,70,40);
-//        searchMonthCombo.setBounds(90,20,70,40);
 
         JLabel searchLabel = new JLabel("검색");
         JLabel dateLabel = new JLabel("날짜");
