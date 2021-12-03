@@ -339,31 +339,6 @@ public class App extends JFrame{
 
     }
 
-    public void setSearchYearCombo(){
-
-        currentDate = LocalDate.now();
-        thisYear = currentDate.getYear();
-        List<String> list = new ArrayList<>();
-
-        for(int i = 1900; i <= thisYear; i++){
-            list.add(Integer.toString(i));
-        }
-        searchYearCombo = new JComboBox(list.toArray(new String[list.size()]));
-
-    }
-
-    public void setSearchMonthCombo(int lastMonth){
-
-        List<String> list = new ArrayList<>();
-
-        for(int i = 1; i <= lastMonth; i++){
-            list.add(Integer.toString(i));
-        }
-        searchMonthCombo = new JComboBox(list.toArray(new String[list.size()]));
-
-        searchMonthCombo.setBounds(90,20,70,40);
-        southPanel.add(searchMonthCombo);
-    }
 
     public void setInputYearCombo() {
         currentDate = LocalDate.now();
